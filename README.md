@@ -9,8 +9,20 @@ gh label clone -f pawamoy/github-labels -R pawamoy/duty
 Shell commands to apply labels to all repositories within a GitHub user account:
 
 ```bash
+unwanted_labels=(
+  "documentation"
+  "enhancement"
+  "good first issue"
+  "help wanted"
+  "invalid"
+  "question"
+  "wontfix"
+)
 for repo in $(gh repo list pawamoy --json name --jq '.[].name' --limit 100 --source --no-archived --visibility public | \
     grep -ve github-labels -e website -e stars -e pawamoy -e awesome); do
   gh label clone -f pawamoy/github-labels -R pawamoy/$repo
+  for label in "${unwanted_labels[@]}"; do
+    gh label delete $label -R pawamoy/$repo --yes
+  done 
 done
 ```
