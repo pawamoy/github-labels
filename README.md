@@ -6,7 +6,7 @@ Use the following command to clone labels from this repository into another:
 gh label clone -f pawamoy/github-labels -R pawamoy/duty
 ```
 
-Shell commands to apply labels to all repositories within a GitHub user account:
+Shell script to apply labels to some repositories within a GitHub user account:
 
 ```bash
 unwanted_labels=(
@@ -18,7 +18,8 @@ unwanted_labels=(
   "question"
   "wontfix"
 )
-for repo in $(gh repo list pawamoy --json name --jq '.[].name' --limit 100 --source --no-archived --visibility public | \
+for repo in $(gh repo list pawamoy --json name --jq '.[].name' --limit 100 \
+    --source --no-archived --visibility public --language python,jinja | \
     grep -ve github-labels -e website -e stars -e pawamoy -e awesome); do
   gh label clone -f pawamoy/github-labels -R pawamoy/$repo
   for label in "${unwanted_labels[@]}"; do
